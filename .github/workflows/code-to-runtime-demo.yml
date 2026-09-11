@@ -1,0 +1,59 @@
+name: Build, label, push and deploy code-to-runtime demo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "06-K8s/code-to-runtime-demo/**"
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC, no stored secrets)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name ${{ vars.ACR_NAME }}
+
+      # OCI labels let Defender for Cloud map this image back to this repo/commit
+      # without requiring the DevOps connector (see container-image-mapping docs).
+      - name: Extract OCI metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ vars.ACR_NAME }}.azurecr.io/code-to-runtime-demo
+          tags: |
+            type=sha,format=long
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: 06-K8s/code-to-runtime-demo/app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ vars.AKS_RESOURCE_GROUP }} \
+            --name ${{ vars.AKS_CLUSTER_NAME }} \
+            --overwrite-existing
+
+      - name: Deploy to AKS
+        run: |
+          IMAGE_TAG="${{ vars.ACR_NAME }}.azurecr.io/code-to-runtime-demo:sha-${{ github.sha }}"
+          sed "s|IMAGE_PLACEHOLDER|$IMAGE_TAG|" 06-K8s/code-to-runtime-demo/deployment.yaml | kubectl apply -f -
+          kubectl -n threatapps rollout status deployment/code-to-runtime-demo --timeout=180s

@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/06-K8s/code-to-runtime-demo/app"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/06-K8s/code-to-runtime-demo/app"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
