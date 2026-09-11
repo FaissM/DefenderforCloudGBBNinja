@@ -1,5 +1,6 @@
 ### ---------------------------------------------------------------------------------
-### Unmanaged docker running on Linux VM - ASC CIS Validation + Alerts
+### Unmanaged docker running on Linux VM - Microsoft Defender for Cloud CIS Validation + Alerts
+### NOTE: Requires Microsoft Defender for Servers (Plan 2) enabled on the subscription
 ### ---------------------------------------------------------------------------------
 
 # 0 - Connect to Linux box 
@@ -42,4 +43,4 @@
     # kill it
     sudo docker contaienr kill CONTAINERID
 
-# After a while, verify Docker CIS assessments in ASC
+# After a while, verify Docker CIS assessments in Microsoft Defender for Cloud
