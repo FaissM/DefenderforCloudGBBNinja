@@ -1,0 +1,38 @@
+name: Deploy hardening lab pods
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "06-K8s/artifacts/hardening-lab-pods.yaml"
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC, no stored secrets)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ vars.AKS_RESOURCE_GROUP }} \
+            --name ${{ vars.AKS_CLUSTER_NAME }} \
+            --overwrite-existing
+
+      - name: Deploy hardening lab pods
+        run: |
+          kubectl create namespace threatapps --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f 06-K8s/artifacts/hardening-lab-pods.yaml
+          kubectl get pods -n threatapps -o wide

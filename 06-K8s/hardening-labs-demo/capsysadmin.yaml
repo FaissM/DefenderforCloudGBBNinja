@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hardening-demo
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-cap-sys-admin
+  namespace: hardening-demo
+spec:
+  containers:
+    - name: nginx-cap-sys-admin
+      image: IMAGE_PLACEHOLDER
+      securityContext:
+        capabilities:
+          add: ["SYS_ADMIN"]

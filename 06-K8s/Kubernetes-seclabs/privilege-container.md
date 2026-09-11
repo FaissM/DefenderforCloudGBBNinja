@@ -5,13 +5,15 @@ Machine logs indicate that a privileged Docker container is running. A privilege
 we will show how within a privilege container and no restrictions from the unerlaying node, we can mount a volume from the node
 As privilege container, we can get into the mounted volume and access the /etc and crack the passwords with john the rieper 
 
-we will create a privileged pod as this
+The privileged pod definition lives in
+[`../hardening-labs-demo/privileged-container.yaml`](../hardening-labs-demo/privileged-container.yaml):
 
 ```
 apiVersion: v1
 kind: Pod
 metadata:
   name: security-context-demo
+  namespace: hardening-demo
 spec:
   volumes:
   - name: sec-ctx-vol
@@ -19,7 +21,7 @@ spec:
       path: /etc
   containers:
   - name: sec-ctx-pod
-    image: nginx
+    image: IMAGE_PLACEHOLDER
     command: [ "sh", "-c", "sleep 999" ]
     volumeMounts:
     - name: sec-ctx-vol
@@ -27,6 +29,9 @@ spec:
     securityContext:
       privileged: true
 ```
+
+It's deployed via CI/CD (see [`../hardening-labs-demo/README.md`](../hardening-labs-demo/README.md))
+into the `hardening-demo` namespace, not applied locally.
 
 we access the running container
 

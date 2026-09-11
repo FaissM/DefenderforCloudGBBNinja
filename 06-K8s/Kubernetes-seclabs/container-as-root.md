@@ -9,25 +9,29 @@ From a view in Defender for Cloud, you can pivot to one of your Kubernetes clust
 Insecure configurations such as this one is seen as one of the OWASP Top 10 misconfigurations for Kubernetes
 https://github.com/OWASP/www-project-kubernetes-top-ten/blob/main/2022/en/src/K01-insecure-workload-configurations.md
 
-For this lab we will create a pod using a manifest file that will use the nginx image stored in the ACR registry, and using pod SecurityContext it will deploy the container in root mode
+For this lab we will create a pod using a manifest file that will use an image built and
+pushed to our own ACR registry, and using pod SecurityContext it will deploy the container in root mode
 
-The manifests file looks like this:
+The manifest lives in
+[`../hardening-labs-demo/container-as-root.yaml`](../hardening-labs-demo/container-as-root.yaml):
 
 ```
 apiVersion: v1
 kind: Pod
 metadata:
   name: nginx-as-root
+  namespace: hardening-demo
 spec:
   containers:
   - name: nginx-as-root
-    image: k8sgoatacr.azurecr.io/nginx:latest
+    image: IMAGE_PLACEHOLDER
   securityContext:  
     #root user
     runAsUser: 0
 ```
 
-We will use a Github action to dpeloy a workflow that pushes the container image into a kubernetes pod
+We use a GitHub Actions workflow (OIDC, no stored secrets) to build the image, push it to
+ACR, and deploy it - see [`../hardening-labs-demo/README.md`](../hardening-labs-demo/README.md).
 
 We will have an Azure Policy that denies the creation of such container. We will use this Policy Definition:
 

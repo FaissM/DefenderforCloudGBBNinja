@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-as-root
+  namespace: hardening-demo
+spec:
+  containers:
+    - name: nginx-as-root
+      image: IMAGE_PLACEHOLDER
+      securityContext:
+        # root user
+        runAsUser: 0
