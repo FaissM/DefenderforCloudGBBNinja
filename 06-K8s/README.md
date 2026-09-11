@@ -33,3 +33,31 @@ Vulnerability Management and Threat Detection.
 > Where you see "ASC" (Azure Security Center) in scripts/comments, read it as
 > **Microsoft Defender for Cloud**, and the old separate "Defender for Kubernetes" /
 > "Defender for container registries" plans are now a single **Containers** plan.
+
+## Advanced labs (separate cluster)
+
+A few 2026 Defender for Containers capabilities change cluster-wide behavior in ways
+that would break the labs above if applied to the same cluster (for example, admission
+Block rules would reject the same non-compliant pods those labs rely on deploying
+successfully so Defender can detect them afterwards). These run on a second,
+purpose-built cluster instead:
+
+```
+./Setup-Advanced-Environment.ps1 -SubscriptionId <your-subscription-id>
+```
+
+This provisions `aks-defender-advanced-lab` with the Defender sensor installed directly
+via Helm (no AKS security profile, so there's no profile-vs-Helm migration to manage),
+with the anti-malware collector enabled. Labs:
+
+- [gated-deployment-misconfiguration.md](Kubernetes-seclabs/gated-deployment-misconfiguration.md)
+- [gated-deployment-vulnerability.md](Kubernetes-seclabs/gated-deployment-vulnerability.md)
+- [anti-malware-detection.md](Kubernetes-seclabs/anti-malware-detection.md)
+- [binary-drift-detection.md](Kubernetes-seclabs/binary-drift-detection.md)
+- [dns-detection.md](Kubernetes-seclabs/dns-detection.md)
+
+Two more 2026 features are fully passive/automatic and are verified directly on the main
+lab cluster (`aks-defender-k8s-lab`), no separate cluster needed:
+
+- [container-level-misconfiguration.md](Kubernetes-seclabs/container-level-misconfiguration.md)
+- [upgrade-aks-version.md](Kubernetes-seclabs/upgrade-aks-version.md)
