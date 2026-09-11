@@ -1,37 +1,25 @@
-# Microsoft Defender for Cloud - GBB Ninja labs
+# Microsoft Defender for Cloud
 
-Hands-on labs and scripts to demo and test **Microsoft Defender for Cloud** (formerly
-Azure Security Center / ASC) across a range of Azure workloads: hardening, vulnerability
-management, and threat detection.
+Hands-on labs to demo and test **Microsoft Defender for Cloud** (formerly Azure
+Security Center / ASC) against real Azure workloads.
 
 > Fork of [davisanc/DefenderforCloudGBBNinja](https://github.com/davisanc/DefenderforCloudGBBNinja),
-> updated for the current Defender for Cloud plan structure (unified Containers plan,
-> Defender CSPM) and extended with a code-to-runtime / GitHub Advanced Security demo.
+> restarted from scratch with only the Defender for Containers lab kept and modernized
+> for the current Defender for Cloud plan structure (unified Containers plan, Defender
+> CSPM). More workload labs will be added over time.
 
-## Folders
+## Labs
 
 | Folder | Workload |
 |---|---|
-| [00-Servers](00-Servers) | Defender for Servers |
-| [01-ARM](01-ARM) | Azure Resource Manager |
-| [02-DNS](02-DNS) | Defender for DNS |
-| [03-ACR](03-ACR) | Azure Container Registry |
-| [04-SQL](04-SQL) | Defender for SQL |
-| [05-Storage](05-Storage) | Defender for Storage |
-| [06-K8s](06-K8s) | Kubernetes / AKS security labs - includes [`Setup-Environment.ps1`](06-K8s/Setup-Environment.ps1) to bootstrap a full AKS + ACR + Defender for Containers test environment, and a [code-to-runtime + GHAS demo](06-K8s/code-to-runtime-demo) |
-| [07-KeyVault](07-KeyVault) | Defender for Key Vault |
-| [08-OSDBs](08-OSDBs) | Defender for open-source databases |
-| [09-AppService](09-AppService) | Defender for App Service |
-| [Regulatory-Compliance](Regulatory-Compliance) | Regulatory compliance standards |
+| [06-K8s](06-K8s) | **Defender for Containers** - AKS + ACR security labs covering hardening (Azure Policy/Gatekeeper), vulnerability management, and threat detection. Includes [`Setup-Environment.ps1`](06-K8s/Setup-Environment.ps1) to bootstrap a full test environment, and a [code-to-runtime + GitHub Advanced Security demo](06-K8s/code-to-runtime-demo). |
 
 ## Getting started
-
-Each folder is self-contained with its own README/lab instructions. Start with the
-folder matching the workload you want to demo. For Kubernetes:
 
 ```
 cd 06-K8s
 ./Setup-Environment.ps1 -SubscriptionId <your-subscription-id>
 ```
 
-Requires the Azure CLI (`az`) logged in, and `kubectl` for the Kubernetes labs.
+Requires the Azure CLI (`az`) logged in, and `kubectl`. See [06-K8s/README.md](06-K8s/README.md)
+for the full lab walkthrough.
